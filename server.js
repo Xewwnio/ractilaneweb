@@ -21,8 +21,16 @@ fs.ensureDirSync(UPLOADS_PATH);
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(UPLOADS_PATH));
+
+// ⚡️⚡️⚡️ ГЛАВНОЕ - отдаем index.html на главной странице ⚡️⚡️⚡️
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Отдаем статические файлы из текущей папки
+app.use(express.static(__dirname));
 
 // Инициализация базы данных
 function initDB() {
@@ -30,9 +38,9 @@ function initDB() {
         'users.json': [{
             name: 'Xewwnio',
             user: 'xewwnio',
-            pass: 'ractilane1dvd',
+            pass: 'admin123',
             avatar: '',
-            role: 'Developer',
+            role: 'admin',
             verified: true,
             banned: false,
             registered: Date.now()
@@ -382,8 +390,8 @@ wss.on('connection', (ws) => {
 });
 
 // Запуск сервера
-const PORT = 3000;
-server.listen(PORT, () => {
-    console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
-    console.log(`📁 База данных в папке: ${DB_PATH}`);
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`🔴 Сервер запущен на http://localhost:${PORT}`);
+    console.log(`🟢 База данных в папке: ${DB_PATH}`);
 });
